@@ -1,0 +1,2 @@
+TZ: 'Australia/Sydney'
+INIT_PACKAGES: [ 'bash', 'curl', 'wget', 'grep', 'git', 'ufw', 'net-tools']

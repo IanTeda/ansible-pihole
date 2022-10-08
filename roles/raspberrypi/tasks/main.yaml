@@ -1,0 +1,14 @@
+- name: Bootstrap {{ ansible_user }}
+  import_tasks: ansible_user.yaml
+
+- name: Configure raspberry pi OS
+  import_tasks: config.yaml
+
+- name: Add initial software packages
+  import_tasks: packages.yaml
+
+- name: Harden sshd
+  import_tasks: sshd.yaml
+
+- name: Setup firewall
+  import_tasks: firewall.yaml

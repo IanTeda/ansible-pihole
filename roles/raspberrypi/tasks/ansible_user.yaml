@@ -1,0 +1,17 @@
+# ==============================================
+# BOOTSTRAP ANSIBLE USER
+# Setup the Ansible user for future playbooks
+# ==============================================
+
+# So we don't need to --ask-become-pass each play
+- name: Allow {{ ansible_user }} to execute without password
+  tags: ansible-user
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers
+    state: present
+    regexp: "^{{ ansible_user }}" # RegEx to check for state present
+    line: "{{ ansible_user }} ALL=(ALL) NOPASSWD: ALL"
+    validate: "visudo -cf %s"
+
+- name: Remove {{ ansible_user }} account password login
+  ansible.builtin.command: "passwd -d {{ ansible_user }}"

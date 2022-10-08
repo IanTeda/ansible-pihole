@@ -1,0 +1,71 @@
+# ==============================================
+# FIREWALL CONFIG
+# Initial firewall configuration
+# ==============================================
+
+- name: Enable IPv4 forwarding
+  tags: firewall
+  ansible.posix.sysctl:
+    name: net.ipv4.ip_forward
+    value: "1"
+    state: present
+    reload: yes
+  notify: ufw reload
+
+- name: Disable IPv6 forwarding
+  tags: firewall
+  ansible.posix.sysctl:
+    name: net.ipv6.conf.all.disable_ipv6
+    value: "1"
+    state: present
+    reload: yes
+  notify: ufw reload
+
+- name: Disable IPv6 forwarding
+  tags: firewall
+  ansible.posix.sysctl:
+    name: net.ipv6.conf.default.disable_ipv6
+    value: "1"
+    state: present
+    reload: yes
+  notify: ufw reload
+
+- name: Allow SSH connections - anti lockout form local network
+  tags: firewall
+  community.general.ufw:
+    rule: allow
+    name: OpenSSH
+    src: 192.168.0.0/16
+    comment: "ALLOW SSH port - anti lockout"
+  notify: ufw reload
+
+# - name: Allow DNS connections from local network
+#   tags: firewall
+#   community.general.ufw:
+#     rule: allow
+#     name: dns
+#     src: 192.168.0.0/16
+#     comment: "ALLOW DNS ports"
+#   notify: ufw reload
+
+# - name: Allow all access from RFC1918 networks
+#   tags: firewall
+#   community.general.ufw:
+#     rule: allow
+#     src: '{{ item }}'
+#     comment: Allow RFC1918 networks
+#   loop:
+#     - 10.0.0.0/8
+#     - 172.16.0.0/12
+#     - 192.168.0.0/16
+#   notify: ufw reload
+
+- name: Deny all other incoming traffic by default
+  tags: firewall
+  community.general.ufw:
+    rule: deny
+    direction: in
+    log: yes
+    state: enabled
+    comment: Default DENY incoming traffic
+  notify: ufw reload
