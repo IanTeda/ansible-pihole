@@ -1,0 +1,83 @@
+---
+- name: Install required pihole packages
+  tags: packages
+  ansible.builtin.apt: 
+    name:       
+      - nano
+      - git
+      - resolvconf
+      - tzdata
+      - python3-pip
+      - python3-setuptools
+    state: latest
+    autoclean: yes
+    autoremove: yes
+
+- name: Check for existing pihole
+  stat:
+    path: "{{ PIHOLE_BIN_PATH }}"
+  register: pihole_bin
+
+- name: Install {{ PIHOLE_GROUP }} if not present
+  block:
+    - name: Create pihole group
+      group:
+        name: "{{ PIHOLE_GROUP }}"
+        state: present
+
+    - name: Create {{ PIHOLE_USER }} user
+      user:
+        name: "{{ PIHOLE_USER }}"
+        comment: pihole
+        groups: "{{ PIHOLE_GROUP }}"
+
+    - name: Create pihole etc (config) directory {{ PIHOLE_ETC_DIR }}
+      file:
+        path: "{{ PIHOLE_ETC_DIR }}"
+        state: directory
+        mode: 0755
+        owner: "{{ PIHOLE_USER }}"
+        group: "{{ PIHOLE_GROUP }}"
+
+    - name: Pushing pihole unattended config file setupVars.conf into {{ PIHOLE_ETC_DIR }}
+      template:
+        src: templates/setupVars.conf.j2
+        dest: "{{ PIHOLE_ETC_DIR }}/setupVars.conf"
+        mode: 0644
+        owner: root
+        group: root
+    
+    - name: Download pihole install script
+      ansible.builtin.get_url:
+        url: https://install.pi-hole.net
+        dest: /tmp/pihole-install.sh
+        mode: u+rwx
+
+    ## Need to skip OS check because of edge router firewall DNS rules
+    - name: Run pi-hole install script
+      shell: |
+        export PIHOLE_SKIP_OS_CHECK=true
+        /tmp/pihole-install.sh --unattended
+
+  when:
+    - not pihole_bin.stat.exists or PIHOLE_REINSTALL
+
+
+- name: "Check and apply updates to pihole"
+  command: "{{ PIHOLE_BIN_PATH }} updatePihole"
+  register: updatePihole
+  when:
+    - pihole_bin.stat.exists
+    - PIHOLE_UPDATE|bool
+    - not PIHOLE_REINSTALL
+
+- name: Output from update
+  debug:
+    var: updatePihole.stdout_lines
+  when: updatePihole.changed == true
+
+- name: Finished! ipv4
+  debug:
+    msg: "visit http://{{ PIHOLE_IPV4_ADDRESS }}/admin/ to start managing your pi-hole"
+  when:
+    - PIHOLE_IPV4_ADDRESS and PIHOLE_IPV4_ADDRESS|length > 0

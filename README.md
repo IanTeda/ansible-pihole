@@ -33,3 +33,5 @@ ansible pihole -m ping -v --ask-become-pass
 #### Reference
 
 * [44 Ansible Best Practices to Follow](https://spacelift.io/blog/ansible-best-practices)
+* [Github Eideen/ansible-pihole](https://github.com/Eideen/ansible-pihole)
+* [zfuller/pihole](https://github.com/zfuller/pihole)

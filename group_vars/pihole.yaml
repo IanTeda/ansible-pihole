@@ -1,2 +1,52 @@
 TZ: 'Australia/Sydney'
 INIT_PACKAGES: [ 'bash', 'curl', 'wget', 'grep', 'git', 'ufw', 'net-tools']
+
+# task variables
+PIHOLE_BIN_PATH: /usr/local/bin/pihole
+PIHOLE_GROUP: pihole
+PIHOLE_USER: pihole
+PIHOLE_DIRECTORY: "/home/{{ PIHOLE_USER }}/pihole"
+PIHOLE_VERSION: v5.12.2
+PIHOLE_ETC_DIR: /etc/pihole/
+PIHOLE_UPDATE: true
+PIHOLE_REINSTALL: false
+
+## ================================================
+## PI-HOLE CONFIGURATION
+## https://docs.pi-hole.net/ftldns/configfile/
+## ================================================
+
+## echo -n P@ssw0rd | sha256sum | awk '{printf "%s",$1 }' | sha256sum
+PIHOLE_WEBPASSWORD: 344d7c64abf96d9a522e7b00a872a667ad2c1a769b6e71449a803b4e2f107716
+
+## DNS Configuration
+PIHOLE_DNS_FQDN_REQUIRED: "true"
+PIHOLE_DNS_BOGUS_PRIV: "true"
+PIHOLE_DNSSEC: "true"
+PIHOLE_DNSMASQ_LISTENING: "single"
+
+## Conditional Forwarding
+PIHOLE_CONDITIONAL_FORWARDING: "false"
+PIHOLE_CONDITIONAL_FORWARDING_IP:
+PIHOLE_CONDITIONAL_FORWARDING_DOMAIN:
+PIHOLE_CONDITIONAL_FORWARDING_REVERSE:
+
+## Rev Server
+PIHOLE_REV_SERVER: "false"
+PIHOLE_REV_SERVER_CIDR:
+PIHOLE_REV_SERVER_TARGET:
+PIHOLE_REV_SERVER_DOMAIN:
+
+PIHOLE_INTERFACE: "local-service"
+PIHOLE_IPV4_ADDRESS: 192.168.3.5
+PIHOLE_IPV6_ADDRESS:
+PIHOLE_DNS_1: 192.168.3.1
+PIHOLE_DNS_2: 192.168.3.1
+PIHOLE_QUERY_LOGGING: "true"
+PIHOLE_INSTALL_WEB_SERVER: "true"
+PIHOLE_INSTALL_WEB_INTERFACE: "true"
+PIHOLE_LIGHTTPD_ENABLED: "true"
+PIHOLE_ADMIN_EMAIL: ian@teda.id.au
+PIHOLE_WEBLAYOUT: "boxed"
+PIHOLE_WEBTHEME: "default-light"
+PIHOLE_BLOCKING_ENABLED: "true"

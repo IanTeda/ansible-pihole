@@ -1,0 +1,7 @@
+# ansible-playbook 02_pihole.yaml
+---
+- hosts: pihole
+  gather_facts: yes
+  become: yes
+  roles:
+    - role: pihole

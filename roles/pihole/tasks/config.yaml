@@ -1,0 +1,29 @@
+- name: Allow DNS connections from local network
+  tags: firewall
+  community.general.ufw:
+    insert: 1
+    rule: allow
+    name: dns
+    src: 192.168.0.0/16
+    comment: "ALLOW DNS ports"
+  notify: ufw reload
+
+- name: Allow HTTP connections from local network
+  tags: firewall
+  community.general.ufw:
+    insert: 2
+    rule: allow
+    name: WWW
+    src: 192.168.0.0/16
+    comment: "ALLOW http port 80 connections"
+  notify: ufw reload
+
+- name: Set daily cron job to update pihole
+  become: yes
+  become_user: root
+  cron:
+    name: "daily updater"
+    user: "www-data"
+    minute: "0"
+    hour: "0"
+    job: "/usr/local/bin/pihole -up"

@@ -1,0 +1,13 @@
+---
+- name: pihole reboot
+  reboot:
+    msg: "Reboot initiated by Ansible"
+
+- name: sshd restart
+  service:
+    name: sshd
+    state: restarted
+
+- name: ufw reload
+  ufw:
+    state: reloaded

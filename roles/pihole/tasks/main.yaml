@@ -1,0 +1,5 @@
+- name: Configure OS for pihole
+  import_tasks: config.yaml
+
+- name: Install pihole
+  import_tasks: install.yaml

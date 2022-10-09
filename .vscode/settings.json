@@ -2,10 +2,20 @@
     "cSpell.words": [
         "adduser",
         "autoclean",
+        "autoremove",
+        "DNSMASQ",
+        "LIGHTTPD",
         "NOPASSWD",
         "pihole",
         "pivpn",
         "posix",
-        "raspberrypi"
+        "raspberrypi",
+        "resolvconf",
+        "setuptools",
+        "tzdata",
+        "Vars",
+        "WEBLAYOUT",
+        "WEBPASSWORD",
+        "webtheme"
     ]
 }
