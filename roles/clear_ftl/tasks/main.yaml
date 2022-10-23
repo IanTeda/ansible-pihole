@@ -1,0 +1,15 @@
+- name: Stop FTL
+  ansible.builtin.service:
+    name: pihole-FTL
+    state: stopped
+
+- name: Remove database file
+  ansible.builtin.file:
+    state: absent
+    path: /etc/pihole/pihole-FTL.db
+
+
+- name: Start FTL
+  ansible.builtin.service:
+    name: pihole-FTL
+    state: started

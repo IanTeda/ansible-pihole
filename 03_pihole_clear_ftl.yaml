@@ -1,0 +1,7 @@
+# ansible-playbook 03_pihole_clear_ftl.yaml
+---
+- hosts: pihole
+  gather_facts: yes
+  become: yes
+  roles:
+    - role: clear_ftl
