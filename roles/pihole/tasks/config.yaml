@@ -22,8 +22,18 @@
   become: yes
   become_user: root
   cron:
-    name: "daily updater"
-    user: "www-data"
+    name: "daily pihole updater"
+    user: "root"
     minute: "0"
     hour: "0"
-    job: "/usr/local/bin/pihole -up"
+    job: "/usr/local/bin/pihole updatePihole"
+
+- name: Set daily cron job to update pihole gravity
+  become: yes
+  become_user: root
+  cron:
+    name: "daily pihole gravity updater"
+    user: "root"
+    minute: "0"
+    hour: "0"
+    job: "/usr/local/bin/pihole updateGravity"

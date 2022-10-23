@@ -63,7 +63,7 @@
     - not pihole_bin.stat.exists or PIHOLE_REINSTALL
 
 
-- name: "Check and apply updates to pihole"
+- name: Check and apply updates to pihole
   command: "{{ PIHOLE_BIN_PATH }} updatePihole"
   register: updatePihole
   when:
