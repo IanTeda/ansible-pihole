@@ -1,15 +1,21 @@
 TZ: 'Australia/Sydney'
-INIT_PACKAGES: [ 'bash', 'curl', 'wget', 'grep', 'git', 'ufw', 'net-tools']
+INIT_PACKAGES: [ 'bash', 'curl', 'wget', 'grep', 'git', 'ufw', 'net-tools', 'unattended-upgrades']
 
-# task variables
+# Pihole task variables
 PIHOLE_BIN_PATH: /usr/local/bin/pihole
 PIHOLE_GROUP: pihole
 PIHOLE_USER: pihole
-PIHOLE_DIRECTORY: "/home/{{ PIHOLE_USER }}/pihole"
-PIHOLE_VERSION: v5.12.2
 PIHOLE_ETC_DIR: /etc/pihole/
 PIHOLE_UPDATE: true
 PIHOLE_REINSTALL: false
+
+# Pivpn task variables
+PIVPN_BIN_PATH: /usr/local/bin/pivpn
+PIVPN_GROUP: pivpn
+PIVPN_USER: pivpn
+PIVPN_ETC_DIR: /etc/pivpn/
+PIVPN_UPDATE: true
+PIVPN_REINSTALL: false
 
 ## ================================================
 ## PI-HOLE CONFIGURATION
@@ -50,3 +56,25 @@ PIHOLE_ADMIN_EMAIL: ian@teda.id.au
 PIHOLE_WEBLAYOUT: "boxed"
 PIHOLE_WEBTHEME: "default-light"
 PIHOLE_BLOCKING_ENABLED: "true"
+
+
+## ================================================
+## PIVPN CONFIGURATION
+## https://docs.pivpn.io/install/
+## ================================================
+
+PIVPN_USER_PASSWORD: "pivpn"
+PIVPN_UNATTENDED_UPGRADES_PACKAGE: "unattended-upgrades"
+PIVPN_NETWORK_INTERFACE: "eth0"
+PIVPN_IPV4_DNS: "localhost"
+PIVPN_IPV4_ADDRESS: "{{ ansible_default_ipv4.address if ansible_default_ipv4.address is defined else '' }}"
+PIVPN_IPV4_GATEWAY: "{{ ansible_default_ipv4.gateway if ansible_default_ipv4.gateway is defined else '' }}"
+PIVPN_PROTOCOL: "udp"
+PIVPN_PORT: "1194"
+PIVPN_ENCRYPTION_KEY_SIZE: "256"
+PIVPN_ENABLE_OPENVPN24: "true"
+PIVPN_DOWNLOAD_DH_PARAM: "false"
+PIVPN_PUBLIC_SERVER_NAME: ""
+PIVPN_DNS_SERVER1: "{{ ansible_dns.nameservers[0] if ansible_dns.nameservers|length>=1 else '' }}"
+PIVPN_DNS_SERVER2: "{{ ansible_dns.nameservers[1] if ansible_dns.nameservers|length>=2 else '' }}"
+PIVPN_SERVER_NAME: "{{ hostname }}"

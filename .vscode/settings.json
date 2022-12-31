@@ -4,6 +4,9 @@
         "autoclean",
         "autoremove",
         "DNSMASQ",
+        "dnsutils",
+        "Eideen",
+        "grepcidr",
         "LIGHTTPD",
         "NOPASSWD",
         "pihole",
@@ -11,11 +14,13 @@
         "posix",
         "raspberrypi",
         "resolvconf",
+        "rmpratt",
         "setuptools",
         "tzdata",
         "Vars",
         "WEBLAYOUT",
         "WEBPASSWORD",
-        "webtheme"
+        "webtheme",
+        "zfuller"
     ]
 }

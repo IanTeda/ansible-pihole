@@ -64,7 +64,9 @@
 
 
 - name: Check and apply updates to pihole
-  command: "{{ PIHOLE_BIN_PATH }} updatePihole"
+  shell: |
+    export PIHOLE_SKIP_OS_CHECK=true
+    pihole -r
   register: updatePihole
   when:
     - pihole_bin.stat.exists

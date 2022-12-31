@@ -1,6 +1,6 @@
 # ==============================================
 # INITIAL PACKAGES
-# Update OS and install initial OS packages
+# Update OS and install initial packages
 # ==============================================
 
 - name: Upgrade OS (apt-get dist-upgrade)
@@ -35,3 +35,12 @@
   tags: packages
   reboot:
   when: reboot_required.stat.exists
+
+- name: Setup unattended-upgrades
+  # Configure a .deb package
+  # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/debconf_module.html
+  ansible.builtin.debconf:
+    name: unattended-upgrades
+    question: unattended-upgrades/enable_auto_updates
+    vtype: boolean
+    value: "true"
