@@ -1,0 +1,27 @@
+---
+- name: Deploy Portainer agent container
+  community.docker.docker_container:
+    name: portainer_agent
+    image: portainer/agent
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /var/lib/docker/volumes:/var/lib/docker/volumes:rw
+    ports:
+      - "9001:9001"
+    restart_policy: "unless-stopped"
+    detach: true
+
+- name: Allow Portainer Agent endpoint connections
+  community.general.ufw:
+    rule: allow
+    port: 9001
+    src: 192.168.3.1/24
+    comment: "ALLOW Portainer Agent Endpoint"
+  notify: ufw reload
+
+## docker run -d -p 9001:9001 /
+## --name portainer_agent /
+## --restart=always /
+## -v /var/run/docker.sock:/var/run/docker.sock /
+## -v /var/lib/docker/volumes:/var/lib/docker/volumes /
+## portainer/agent

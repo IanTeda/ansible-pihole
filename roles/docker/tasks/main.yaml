@@ -1,0 +1,5 @@
+- name: Install Docker
+  import_tasks: docker.yaml
+
+- name: Install Portainer agent
+  import_tasks: portainer.yaml

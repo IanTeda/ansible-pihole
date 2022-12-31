@@ -1,0 +1,78 @@
+---
+- name: Check if Docker is already present
+  ansible.builtin.command: which docker
+  failed_when: false
+  changed_when: false
+  check_mode: false
+  register: docker_command_result
+
+- name: Add Docker's official GPG key
+  become: true
+  # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/apt_key_module.html
+  ansible.builtin.apt_key:
+    url: https://download.docker.com/linux/debian/gpg
+    state: present
+  when: docker_command_result.rc == 1
+
+- name: Add docker arch=arm64 and release={{ansible_distribution_release}} for "stable" repository
+  become: true
+  # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/apt_repository_module.html
+  ansible.builtin.apt_repository:
+    repo: 'deb [arch=arm64] https://download.docker.com/linux/debian {{ansible_distribution_release}} stable'
+    state: present
+  when: docker_command_result.rc == 1
+
+- name: Install docker dependencies
+  become: true
+  # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/apt_module.html
+  ansible.builtin.apt:
+    # see list on https://docs.docker.com/engine/install/debian/
+    name: ['apt-transport-https', 'ca-certificates', 'curl', 'gnupg', 'lsb-release']
+    force_apt_get: yes
+    update_cache: yes
+    autoclean: yes
+    autoremove: yes
+    state: latest
+  when: docker_command_result.rc == 1
+
+- name: Install Docker Engine and Docker Compose
+  become: true
+  # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/apt_module.html
+  ansible.builtin.apt:
+    name: ['docker-ce', 'docker-ce-cli', 'containerd.io', 'docker-compose-plugin']
+    force_apt_get: yes
+    update_cache: yes
+    autoclean: yes
+    autoremove: yes
+    state: latest
+  when: docker_command_result.rc == 1
+
+- name: Add ansible user to docker group
+  become: true
+  # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/user_module.html
+  ansible.builtin.user:
+    name: ansible
+    groups: docker
+    append: true
+  when: docker_command_result.rc == 1
+
+- name: Create directory structure for my Dockerfiles
+  # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/file_module.html
+  ansible.builtin.file:
+    path: "~/Dockerfiles"
+    state: directory
+    mode: 0755
+
+- name: Enable and Start Docker service
+  become: true
+  # Manage services
+  # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/service_module.html
+  ansible.builtin.service:
+    name: docker
+    # start on boot
+    enabled: true
+    state: started
+
+
+## References
+# * https://github.com/dhlavaty/ansible-pihole-cloudflared-portainer-docker-compose-rpi4/blob/main/tasks/docker-install.yaml

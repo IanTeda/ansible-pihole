@@ -1,0 +1,7 @@
+# ansible-playbook 03_docker.yaml
+---
+- hosts: pihole
+  gather_facts: yes
+  become: yes
+  roles:
+    - role: docker
