@@ -1,0 +1,48 @@
+---
+# https://grafana.com/tutorials/install-grafana-on-raspberry-pi/
+- name: Check if Grafana is already present
+  ansible.builtin.command: which grafana
+  failed_when: false
+  changed_when: false
+  check_mode: false
+  register: grafana_command_result
+
+- name: Add Grafana's official GPG key
+  become: true
+  ansible.builtin.apt_key:
+    url: https://packages.grafana.com/gpg.key
+    state: present
+  when: grafana_command_result.rc == 1
+
+- name: Add the Grafana APT repository
+  become: true
+  ansible.builtin.apt_repository:
+    repo: 'deb https://packages.grafana.com/oss/deb stable main'
+    state: present
+  when: grafana_command_result.rc == 1
+
+- name: Install Grafana dependencies
+  become: true
+  ansible.builtin.apt:
+    name: ['grafana']
+    force_apt_get: yes
+    update_cache: yes
+    autoclean: yes
+    autoremove: yes
+    state: latest
+  when: grafana_command_result.rc == 1
+
+- name: Enable and Start Grafana service
+  become: true
+  ansible.builtin.service:
+    name: grafana-server
+    enabled: true
+    state: started
+
+- name: Allow Grafana connections
+  community.general.ufw:
+    rule: allow
+    port: 3000
+    src: 192.168.3.1/24
+    comment: "ALLOW Grafana connections"
+  notify: ufw reload
