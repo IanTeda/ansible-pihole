@@ -1,0 +1,20 @@
+- name: Create directory /media/usb-local
+  file:
+    path: /media/usb-local
+    state: directory
+
+- name: Get the uuid of the usb
+  delegate_facts: true
+  shell: | 
+    blkid /dev/sda1 | awk -F'"' '{print $2}'
+  register: uuid
+
+- name: Mount usb  by UUID
+  ansible.posix.mount:
+    src: "UUID={{ uuid.stdout }}"
+    path: /media/usb-local
+    fstype: ext4
+    opts: rw,nosuid,dev,noexec,noatime,nodiratime,auto,nouser,async,nofail
+    dump: 0
+    passno: 2
+    state: mounted

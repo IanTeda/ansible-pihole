@@ -12,3 +12,6 @@
 
 - name: Setup firewall
   import_tasks: firewall.yaml
+
+- name: Mount usb-local
+  import_tasks: usb-local.yaml
